@@ -27,6 +27,8 @@ app.use((err, req, res, next) => {
 
 // Первичный запрос билд-листа (будет повторяться, пока не получим наконец НЕ пустой список)
 controllers.getBuildsList();
+controllers.getSettings();
+
 
 const port = helpers.getConfig('port');
 app.listen(port, err => {

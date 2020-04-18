@@ -15,6 +15,11 @@ const axiosAPI = axios.create({
 });
 
 const apiDB = {
+  // Получение настроек репозитория - чтобы отправлять билд-агенту имя репозитория и команду билда
+  async getSettings() {
+    return await axiosAPI.get('/conf')
+  },
+
   // Получения списка сборок
   async getBuildsList() {
     return await axiosAPI.get('/build/list')
