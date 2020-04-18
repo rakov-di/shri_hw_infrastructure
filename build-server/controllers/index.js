@@ -1,4 +1,5 @@
 const { apiDB } = require('../apiDB');
+const storage = require('../storage');
 
 
 let apiBDErrorsCount = 0; // текущее число ошибок при обращении к БД
@@ -15,7 +16,7 @@ const controllers = {
 
       if (response.data.data.length) { // если список билдов не пустой - сохраняем его для дальнейшей работы
         console.log('Build list successfully got: ', response.data.data.length);
-        // storage.addBuilds(response.data.data)
+        storage.update(response.data.data);
       } else { // если пустой - потвторяем запрос к БД позже
         console.log('Build list is empty, I will try again later');
         setTimeout(controllers.getBuildsList, longInterval);

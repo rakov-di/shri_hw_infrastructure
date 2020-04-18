@@ -3,6 +3,7 @@ const express = require('express');
 const { router } = require('./router');
 const controllers = require('./controllers');
 const helpers = require('./utils/helpers');
+
 const app = express();
 
 // Функции промежуточной обработки (middleware)
