@@ -1,5 +1,13 @@
 const agentControllers = {
-  async startBuild() {
+  async startBuild(req, res) {
+    const message = `Build agent successfully got the build ${req.body.buildId}`;
+    console.log(message);
+    res.status(200).json({
+      message: message
+    })
+    // Склонировать репозиторий
+    // перейти к нужному коммиту
+    // Запустить команду
   //   try {
   //     const config = helpers.getConfig();
   //     const url = `${config.serverHost}:${config.serverPort}/notify-agent`;

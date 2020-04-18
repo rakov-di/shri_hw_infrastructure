@@ -11,6 +11,7 @@ const bsControllers = {
         host: 'http://localhost',
         port: config.port
       };
+      console.log('Send query to build server: ', url, 'to register build-agent');
       const response = await registerAgent(url, params);
       console.log(response.data.message);
     } catch(err) {

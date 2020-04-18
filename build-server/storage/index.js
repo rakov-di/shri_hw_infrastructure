@@ -29,7 +29,7 @@ class Storage{
       return false;
     } else {
       this.agents.push({
-        url: `${host}:${port}`,
+        url: `${host}:${port}/build`,
         status: 'free'
       });
       console.log('Build agent: ', `${host}:${port}`, 'succecfully registered');
@@ -69,13 +69,13 @@ class Storage{
     agent.status = 'busy'; // Меняем статус агента на Занят
     // await apiAgent.start
     // Build(agent.url || '', params);
+    console.log(params);
     await agentControllers.startBuild(agent.url, params);
-    console.log('Build', agent.builId, 'was send to build-agent: ', agent.url);
 
-    agent.startTime = Date();
     try {
+      agent.startTime = Date();
       // await dbControllers.startBuild({ buildId: agent.builId, startTime: agent.startTime});
-    console.log('Build status for build ', agent.buildId, 'was updeted on: ', agent.startTime);
+      console.log('Build status for build ', agent.buildId, 'was updeted on: ', agent.startTime);
     } catch(err) {
       console.log(err);
     }
