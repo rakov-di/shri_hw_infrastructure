@@ -1,7 +1,7 @@
 require('dotenv').config();
-const path = require('path');
 const express = require('express');
-const { router } = require('./router/router');
+const { router } = require('./router');
+const controllers = require('./controllers');
 const helpers = require('./utils/helpers');
 const app = express();
 
@@ -23,6 +23,9 @@ app.use((err, req, res, next) => {
   });
   next();
 });
+
+// Первичный запрос билд-листа (будет повторяться, пока не получим наконец НЕ пустой список)
+controllers.getBuildsList();
 
 const port = helpers.getConfig('port');
 app.listen(port, err => {

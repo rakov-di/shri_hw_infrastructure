@@ -1,0 +1,5 @@
+{
+  "port": 7000,
+  "apiBaseUrl": "https://hw.shri.yandex/api/",
+  "apiToken": "Put your token here"
+}

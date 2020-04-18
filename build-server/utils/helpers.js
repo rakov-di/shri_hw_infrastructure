@@ -8,7 +8,7 @@ const rootPath = path.resolve(__dirname, '../');
 const getConfig = (key) => {
   const configRaw = fs.readFileSync(path.join(rootPath, 'config.json'));
   const config = JSON.parse(configRaw);
-  return config[key];
+  return key ? config[key] : config;
 };
 
 module.exports = { getConfig };
