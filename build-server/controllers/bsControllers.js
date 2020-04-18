@@ -6,6 +6,7 @@ const bsControllers = {
     const message = storage.registerAgent(req.body)
       ? 'Build agent successfully registered'
       : 'Can not register build agent with such url. It already exists';
+    console.log(11111)
     // ?? Возможно, если агент уже зареган - лучше выдавать 500, или хотя бы спец, статус в json добавлять
     res.status(200).json({
       message:  message

@@ -1,6 +1,7 @@
 const express = require('express');
 const { router } = require('./router');
 const helpers = require('./utils/heleprs');
+const { registerAgent } = require('./controllers');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use((err, req, res, next) => {
 // Без этих данных билдить невозможно, поэтому
 // запросы будут повторяться, пока не получат настройки и НЕ пустой список билдов)
 
+registerAgent();
 
 const port = helpers.getConfig('port');
 app.listen(port, err => {
