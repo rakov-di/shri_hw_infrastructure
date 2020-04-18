@@ -1,5 +1,5 @@
 const https = require('https');
-const axios = require('axios').default();
+const axios = require('axios').default;
 const helpers = require('../utils/helpers');
 
 const apiAgent = {
@@ -10,4 +10,4 @@ const apiAgent = {
   },
 };
 
-module.exports = { apiAgent };
+module.exports = apiAgent;

@@ -7,11 +7,15 @@ const shortInterval = 2000; // короткий интервал повторе�
 const longInterval = 10000; // увеличиенный интервал посторения запроса
 
 const dbControllers = {
+  // async getAllData() {
+  //   const [settings, buildsList] = Promise.all([dbControllers.getSettings(), dbControllers.getBuildsList()])
+  // },
+
   // Получения настроек текущего репозитория (repoName и buildCommand)
   async getSettings() {
     try {
       const response = await apiDB.getSettings(); // Узнаем имя текущего репозитория и билд комманду для него
-      console.log('Repo settings successfully got: ', response.data.data);
+      console.log('Repo settings successfully got: ', response.data.data.repoName, response.data.data.buildCommand);
       storage.updateSettings(response.data.data);
     } catch(err) {
       console.error('Can not get repo Settings')
@@ -25,7 +29,7 @@ const dbControllers = {
       apiBDErrorsCount = 0; // После успешного запроса обнуляем счетчик ошибочных запросов
 
       if (response.data.data.length) { // если список билдов не пустой - сохраняем его для дальнейшей работы
-        console.log('Build list successfully got: ', response.data.data.length);
+        console.log('Build list successfully got');
         storage.updateBuildsList(response.data.data);
       } else { // если пустой - потвторяем запрос к БД позже
         console.log('Build list is empty, I will try again later');
@@ -39,9 +43,18 @@ const dbControllers = {
       console.log('Error count: ', apiBDErrorsCount);
       const interval = (apiBDErrorsCount <= maxApiBDErrorsCount) ? shortInterval: longInterval;
       console.log('Interval: ', interval);
-      setTimeout(controllers.getBuildsList, interval);
+      setTimeout(dbControllers.getBuildsList, interval);
     }
   },
+
+  async startBuild(params) {
+    try {
+      return await apiDB.startBuild(params)
+    } catch(err) {
+      console.error('Can not set status In Progress because of en Error: ', err);
+    }
+  }
 };
 
 module.exports = dbControllers;
+

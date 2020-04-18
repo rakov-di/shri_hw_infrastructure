@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { agentControllers } = require('../controllers');
+const { bsControllers } = require('../controllers');
 
 router.get('/', (req, res) => res.status(200).send(String('This is build server')));
 
-router.post('/notify-agent', agentControllers.registerAgent);
-router.post('/notify-build-result', agentControllers.getBuildResult);
+router.post('/notify-agent', express.json(), bsControllers.registerAgent);
+router.post('/notify-build-result', bsControllers.getBuildResult);
 
 module.exports = { router };

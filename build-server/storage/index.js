@@ -1,6 +1,8 @@
-// const apiAgent = require('../apiAgent');
 const apiDB = require('../apiDB');
-const controllers = require('../controllers');
+const apiAgent = require('../apiAgent');
+// const { dbControllers, agentControllers } = require('../controllers');
+const dbControllers = require('../controllers/dbControllers');
+const agentControllers = require('../controllers/agentControllers');
 
 class Storage{
   constructor() {
@@ -16,11 +18,11 @@ class Storage{
   }
 
   updateBuildsList(newBuildsList) {
-    this.buildsList = newBuildsList.filter(build => build.status === 'Waiting').map(build => build.id);
+    this.buildsList = newBuildsList.filter(build => build.status === 'Waiting');
     this.searchAgent();
   }
 
-  registerAgent({ host, port, }) {
+  registerAgent({ host, port }) {
     const url = `${host}:${port}`;
     // Регистриуем, только если агента с таким url еще нет
     if (this.agents.some(agent => agent.url === url)) {
@@ -30,6 +32,7 @@ class Storage{
         url: `${host}:${port}`,
         status: 'free'
       });
+      console.log('Build agent: ', `${host}:${port}`, 'succecfully registered');
       return true;
     }
   }
@@ -39,7 +42,6 @@ class Storage{
     agent.status = status;
     delete agent.buildId;
   }
-
 
   searchAgent() {
     const freeAgents = this.agents.filter(agent => agent.status === 'free');
@@ -59,15 +61,24 @@ class Storage{
     const params = {
       buildId: build.id,
       commitHash: build.commitHash,
-      repoName: repoSettings.repoName,
-      buildCommand:repoSettings.buildCommand
+      repoName: this.settings.repoName,
+      buildCommand:this.settings.buildCommand
     };
 
     agent.builId = build.id; // Запоминаем, какой buildId назнавяен агенту
     agent.status = 'busy'; // Меняем статус агента на Занят
-    console.log('Build was send to build-agent: ', agentURL, ' with paramd: ', params);
-    apiAgent.startBuild(agentURL, params);
-    console.log('Build was send to build-agent: ', agentURL, ' with paramd: ', params);
+    // await apiAgent.start
+    // Build(agent.url || '', params);
+    await agentControllers.startBuild(agent.url, params);
+    console.log('Build', agent.builId, 'was send to build-agent: ', agent.url);
+
+    agent.startTime = Date();
+    try {
+      // await dbControllers.startBuild({ buildId: agent.builId, startTime: agent.startTime});
+    console.log('Build status for build ', agent.buildId, 'was updeted on: ', agent.startTime);
+    } catch(err) {
+      console.log(err);
+    }
   }
 }
 

@@ -24,6 +24,16 @@ const apiDB = {
   async getBuildsList() {
     return await axiosAPI.get('/build/list')
   },
+
+  // Ставим билду статус In Progress
+  async startBuild(params) {
+    return await axiosAPI.post('/build/start', params)
+  },
+
+  // Ставим билду статус Success
+  async finishBuild(params) {
+    return await axiosAPI.post('/build/finish', params)
+  },
 };
 
 module.exports = { apiDB };
