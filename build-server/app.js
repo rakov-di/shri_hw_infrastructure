@@ -24,11 +24,7 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// Первичные запросы за билд-листом и настройками репозитория
-// Без этих данных билдить невозможно, поэтому
-// запросы будут повторяться, пока не получат настройки и НЕ пустой список билдов)
-dbControllers.getSettings();
-dbControllers.getBuildsList();
+dbControllers.getInitialData();
 
 
 const port = helpers.getConfig('port');
