@@ -1,5 +1,5 @@
-const apiDB = require('../apiDB');
-const apiAgent = require('../apiAgent');
+const apiDB = require('../api/apiDB');
+const apiAgent = require('../api/apiAgent');
 // const { dbControllers, agentControllers } = require('../controllers');
 const dbControllers = require('../controllers/dbControllers');
 const agentControllers = require('../controllers/agentControllers');
@@ -67,9 +67,6 @@ class Storage{
 
     agent.builId = build.id; // Запоминаем, какой buildId назнавяен агенту
     agent.status = 'busy'; // Меняем статус агента на Занят
-    // await apiAgent.start
-    // Build(agent.url || '', params);
-    console.log(params);
     await agentControllers.startBuild(agent.url, params);
 
     try {

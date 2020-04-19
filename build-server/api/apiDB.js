@@ -36,4 +36,4 @@ const apiDB = {
   },
 };
 
-module.exports = { apiDB };
+module.exports = apiDB;

@@ -1,4 +1,4 @@
-const { apiDB } = require('../apiDB');
+const { apiDB } = require('../api');
 const storage = require('../storage');
 
 let apiBDErrorsCount = 0; // текущее число ошибок при обращении к БД
