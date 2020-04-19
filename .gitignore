@@ -2,4 +2,5 @@
 .idea/
 node_modules
 build-server/.env
-config.json
+build-server/config.json
+_localRepo
