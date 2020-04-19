@@ -1,7 +1,7 @@
 const { startBuild } = require('../apiAgent');
 
 const agentControllers = {
-  // Получения настроек текущего репозитория (repoName и buildCommand)
+  // Обработка отправки билда билд агенту
   async startBuild(url, params) {
     try {
       console.log('Try to send build', params.buildId, 'to build-agent: ', url);

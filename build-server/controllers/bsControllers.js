@@ -14,13 +14,16 @@ const bsControllers = {
 
   // Получения списка сборок
   async getBuildResult({ buildId, status, log}, res) {
+    console.log(buildId, status, log);
+
     // storage.setAgentStatus(buildId, 'free');
     //
     // // Поменять статус агента на свободен
     // // дернуть ручку finish (изменить статус билда)
-    // res.status(200).json({
-    //   message: 'Result of build successfully got'
-    // })
+    console.log(`Result of build ${buildId} successfully got with status ${status}`);
+    res.status(200).json({
+      message: 'Result of build successfully got'
+    })
   },
 };
 
