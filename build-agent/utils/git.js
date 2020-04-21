@@ -17,19 +17,26 @@ const cloneRepo = async (repoName) => {
   }
 
   // Проверяем, есть ли на сервере локальная папка с ранее склонированным туда репозиторием
-  // Если есть - удаляем его
   if (await isLocalRepoExist(repoLocalDir)) {
-    await helpers.rimraf(repoLocalDir);
+    // Если есть - пулим в него обновления
+    try {
+      await helpers.exec(`git pull origin master`, { cwd: repoLocalDir });
+      console.log(`Changes for git repo ${repoUrl} successfully pulled`);
+    }
+    catch(err) {
+      console.error(`Can't pull changes for git  repo ${repoUrl} because of error: `, err.message);
+    }
+  } else {
+    // Если нет - клонируем указанный репозиторий в локальную папку на сервере
+    try {
+      await helpers.exec(`git clone ${repoUrl} ${repoLocalDir}`);
+      console.log(`Git repo ${repoUrl} successfully cloned`);
+    }
+    catch(err) {
+      console.error(`Can't clone repository ${repoUrl} because of error: `, err.message);
+    }
   }
 
-  // Клонируем указанный репозиторий в локальную папку на сервере
-  try {
-    await helpers.exec(`git clone ${repoUrl} ${repoLocalDir}`);
-    console.log(`Git repo ${repoUrl} successfully cloned`);
-  }
-  catch(err) {
-    console.error(`Can't clone repository ${repoUrl} because of error: `, err.message);
-  }
 };
 
 const isLocalRepoExist = async (dir) => {

@@ -13,17 +13,19 @@ const bsControllers = {
   },
 
   // Получения списка сборок
-  async getBuildResult({ buildId, status, log}, res) {
-    console.log(buildId, status, log);
+  async getBuildResult(req, res) {
+    let { buildId, status, log } = req.body;
 
-    // storage.setAgentStatus(buildId, 'free');
-    //
-    // // Поменять статус агента на свободен
-    // // дернуть ручку finish (изменить статус билда)
     console.log(`Result of build ${buildId} successfully got with status ${status}`);
     res.status(200).json({
       message: 'Result of build successfully got'
-    })
+    });
+
+    storage.updateAgentStatus(buildId, true); // в любом случае освобождаем агент
+    status = status ? 'Success' : 'Fail';
+    storage.updateBuildStatus(buildId, status);
+    //saveToStorage
+    storage.deleteBuild(buildId);
   },
 };
 

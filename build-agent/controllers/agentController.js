@@ -9,13 +9,15 @@ const agentControllers = {
       message: message
     });
     const { buildId, repoName, buildCommand, commitHash } = req.body;
+
     try {
       await cloneRepo(repoName);
       const result = await makeBuild(repoName, commitHash, buildCommand);
-      console.log(buildId, result.stdout);
-      await bsControllers.sendBuildResults({ buildId, status: 'success', log: result.stdout });
+      console.log('crab', buildId, repoName);
+      await bsControllers.sendBuildResults({ buildId, status: true, log: `${result.stderr}\n\n${result.stdout}` });
     } catch(err) {
-      console.error(err);
+      await bsControllers.sendBuildResults({ buildId, status: false, log: err.message });
+      console.error(`Can't make builed because of error${err.message}`);
     }
   }
 };
