@@ -1,5 +1,5 @@
 const storage = require('../storage');
-const dbControllers = require('./controllersDB');
+const controllersDB = require('./controllersDB');
 
 const controllersBS = {
   // Получения настроек текущего репозитория (repoName и buildCommand)

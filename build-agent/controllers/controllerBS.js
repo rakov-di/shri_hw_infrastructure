@@ -8,32 +8,28 @@ const maxApiBSErrorsCount = 2; // максимальное число обращ
 const shortInterval = 2000; // короткий интервал повторения запроса
 const longInterval = 10000; // увеличиенный интервал посторения запроса
 
-const bsControllers = {
+const controllersBS = {
   async registerAgent() {
-    try {
-      const response = await registerAgent();
+    if (await registerAgent()) {
       apiBSErrorsCount = 0;
-    } catch(err) {
-      console.error('Can not register build agent because of error: ', err.message);
+    } else {
       apiBSErrorsCount++;
       const interval = (apiBSErrorsCount <= maxApiBSErrorsCount) ? shortInterval: longInterval;
       console.log(`Next try in an ${interval} ms`);
-      setTimeout(bsControllers.registerAgent, interval);
+      setTimeout(controllersBS.registerAgent, interval);
     }
   },
 
   async sendBuildResults(params) {
-    try {
-      const response = await sendBuildResults(params);
+    if (await sendBuildResults(params)) {
       apiBSErrorsCount = 0;
-    } catch(err) {
+    } else {
       apiBSErrorsCount++;
-      console.error(`Can't send result ti build server because of error: ${err.message}`);
       const interval = (apiBSErrorsCount <= maxApiBSErrorsCount) ? shortInterval: longInterval;
       console.log(`Next try in an ${interval} ms`);
-      setTimeout(bsControllers.sendBuildResults, interval);
+      setTimeout(controllersBS.sendBuildResults.bind(null, params), interval);
     }
   }
 };
 
-module.exports = bsControllers;
+module.exports = controllersBS;

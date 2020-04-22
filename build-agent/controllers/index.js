@@ -1,4 +1,4 @@
-const agentControllers = require('./agentController');
-const bsControllers = require('./bsController');
+const controllersAgent = require('./controllerAgent');
+const controllersBS = require('./controllerBS');
 
-module.exports = { agentControllers, bsControllers };
+module.exports = { controllersAgent, controllersBS };

@@ -1,6 +1,6 @@
 const express = require('express');
 const { router } = require('./router');
-const { dbControllers } = require('./controllers');
+const { controllersDB } = require('./controllers');
 const storage = require('./storage');
 const helpers = require('./utils/helpers');
 

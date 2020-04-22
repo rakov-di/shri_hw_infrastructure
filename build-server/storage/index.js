@@ -1,13 +1,13 @@
-const dbControllers = require('../controllers/controllersDB');
-const agentControllers = require('../controllers/controllersAgent');
+const controllersDB = require('../controllers/controllersDB');
+const controllersAgent = require('../controllers/controllersAgent');
 
-// console.log(typeof dbControllers);
-// console.log(typeof agentControllers);
 // Информация, хранящаяся об агенте
 // this.agents = [{
 //   url: 'http://localhost:8001
 //   isFree: false || true
-//   buildId: 2134213411
+//   buildId: 2134213411,
+//   dateTime: ...,
+//   duration: ...
 // }, {...}, {...}]
 
 // Информация, хранящаяся о билдах соответсвует виду, как она выдается из apiBD.
@@ -22,7 +22,7 @@ class Storage{
   }
 
   async getInitialData() {
-    const response = await dbControllers.getInitialData();
+    const response = await controllersDB.getInitialData();
     if (response) {
       this.updateStore(response);
       await this.searchAgent();
@@ -80,6 +80,7 @@ class Storage{
       const assignedBuild = await this.assignBuildToAgent(freeAgents[agentNum]);
       if (assignedBuild) {
         console.log(`Build successfully assigned to build-agent ${freeAgents[agentNum].url}`);
+        // this.checkIsAgentReachable(freeAgents[agentNum]);
         this.startBuildInDB(assignedBuild, freeAgents[agentNum]);
       } else {
         console.log(`Build-agents didn't assigned. Try next free build-agent`);
@@ -106,13 +107,13 @@ class Storage{
     agent.buildId = String(build.id); // Запоминаем, какой buildId назначен агенту
     agent.isFree = false; // Меняем статус агента на Занят
 
-    return await agentControllers.startBuild(agent.url, params) ? build : false;
+    return await controllersAgent.startBuild(agent.url, params) ? build : false;
   }
 
   async startBuildInDB(build, agent) {
     agent.dateTime = new Date();
     this.updateBuildStatus(build.id,'InProgress');
-    const isStarted = await dbControllers.startBuild({ buildId: agent.buildId, dateTime: agent.dateTime.toISOString() });
+    const isStarted = await controllersDB.startBuild({ buildId: agent.buildId, dateTime: agent.dateTime.toISOString() });
     if (isStarted) {
       if (this.waitingBuilds) {
         this.searchAgent();
@@ -129,9 +130,24 @@ class Storage{
   }
 
   async finishBuild(params) {
-    const isFinish = await dbControllers.finishBuild(params);
+    const isFinish = await controllersDB.finishBuild(params);
     if (!isFinish) setTimeout(this.finishBuild.bind(this, params), 2000);
   }
+
+  // async checkIsAgentReachable({ url, buildId }) {
+  //   const isReachable = await controllersAgent.checkIsAgentReachable(url);
+  //   // Если агент доступен И он все еще существует в списке агентов - продолжаем пинговать
+  //   if (isReachable && this.agents.some(agent => agent.url === url)) {
+  //     setTimeout(this.checkIsAgentReachable.bind(this, url), 2000);
+  //   } else {
+  //     // Удаляем агента
+  //     const idx = this.agents.findIndex(agent => agent.url === url);
+  //     this.agents.splice(idx, 1);
+  //     // Отменяем билд
+  //     await controllersDB.cancelBuild({ buildId })
+  //   }
+  // }
+
 }
 
 module.exports = new Storage();

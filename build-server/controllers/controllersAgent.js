@@ -12,6 +12,15 @@ const controllersAgent = {
       return false;
     }
   },
+
+  // async checkIsAgentReachable(url) {
+  //   try {
+  //     await apiAgent.checkIsAgentReachable(url);
+  //     return true;
+  //   } catch(err) {
+  //     return false;
+  //   }
+  // }
 };
 
 module.exports = controllersAgent;

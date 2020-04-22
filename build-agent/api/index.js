@@ -12,11 +12,25 @@ const agentParams = {
 const apiBS = {
   // Зарегистрировать билд-агент на билд-сервере
   async registerAgent() {
-    return await axios.post(`${serverUrl}/notify-agent`, agentParams);
+    try {
+      await axios.post(`${serverUrl}/notify-agent`, agentParams);
+      console.log('Successfully register build agent');
+      return true;
+    } catch (err) {
+      console.error(`Can't register build agent because of error: ${err.message}`);
+      return false;
+    }
   },
 
   async sendBuildResults(params) {
-    return await axios.post(`${serverUrl}/notify-build-result`, params);
+    try {
+      await axios.post(`${serverUrl}/notify-build-result`, params);
+      console.log(`Successfully send result to build server`);
+      return true;
+    } catch (err) {
+      console.error(`Can't send result to build server because of error: ${err.message}`);
+      return false;
+    }
   },
 };
 

@@ -64,6 +64,17 @@ const controllersDB = {
       return false;
     }
   }
+
+  // async cancelBuild(params) {
+  //   try {
+  //     await apiDB.cancelBuild(params);
+  //     console.log(`Build ${params.buildId} successfully finished in DB`);
+  //     return true;
+  //   } catch(err) {
+  //     console.error(`Can't finish build in DB because of an Error: ${err.message}`);
+  //     return false;
+  //   }
+  // }
 };
 
 module.exports = controllersDB;

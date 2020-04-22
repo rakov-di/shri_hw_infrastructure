@@ -34,6 +34,11 @@ const apiDB = {
   async finishBuild(params) {
     return await axiosAPI.post('/build/finish', params)
   },
+
+  // // Ставим билду статус Cancel
+  // async cancelBuild(params) {
+  //   return await axiosAPI.post('/build/cancel', params)
+  // },
 };
 
 module.exports = apiDB;
