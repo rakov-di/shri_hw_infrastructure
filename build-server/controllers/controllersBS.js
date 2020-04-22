@@ -1,7 +1,7 @@
 const storage = require('../storage');
-const dbControllers = require('./dbControllers');
+const dbControllers = require('./controllersDB');
 
-const bsControllers = {
+const controllersBS = {
   // Получения настроек текущего репозитория (repoName и buildCommand)
   async registerAgent(req, res) {
     const message = storage.registerAgent(req.body)
@@ -33,4 +33,4 @@ const bsControllers = {
   },
 };
 
-module.exports = bsControllers;
+module.exports = controllersBS;

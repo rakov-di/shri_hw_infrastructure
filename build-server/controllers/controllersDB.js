@@ -1,7 +1,7 @@
 const { apiDB } = require('../api');
 // const storage = require('../storage');
 
-const dbControllers = {
+const controllersDB = {
 
   async getInitialData() {
     try {
@@ -9,8 +9,8 @@ const dbControllers = {
       // Без этих данных билдить невозможно, поэтому
       // оба запросы будут повторяться, пока не получат настройки и НЕ пустой список билдов
       const [responseSettings, responseBuildsList] = await Promise.all([
-        dbControllers.getSettings(),
-        dbControllers.getBuildsList()
+        controllersDB.getSettings(),
+        controllersDB.getBuildsList()
       ]);
       if (responseBuildsList.data.data.some(build => build.status === 'Waiting')) {
         console.log('Repo settings and build list successfully got');
@@ -66,5 +66,5 @@ const dbControllers = {
   }
 };
 
-module.exports = dbControllers;
+module.exports = controllersDB;
 

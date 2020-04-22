@@ -54,8 +54,8 @@ cd build-agent && npm ci && npm start
     - app.js - точка всхода
     - config.js - основные настройки
     - build-server/router - маршрутизация зарпросов, приходящих на торчащие наружу ручки
-    - build-server/api - апи для обращения наружу (к аби БД и ручкам билд-агента))
-    - build-server/controllers - обработчки обращений к своим и сторонним апи
+    - build-server/api - апи для обращения наружу (к апи БД и ручкам билд-агента)
+    - build-server/controllers - обработчики обращений к своим и сторонним апи
     - build-server/utils - вспомогательные утилиты
     - build-server/storage - хранилище информации о билдах и агентах
 - build-agent
@@ -63,7 +63,7 @@ cd build-agent && npm ci && npm start
     - config.js - основные настройки
     - build-server/router - маршрутизация зарпросов, приходящих на торчащие наружу ручки
     - build-server/api - апи для обращения наружу (к ручкам билд-сервера))
-    - build-server/controllers - обработчки обращений к своим и сторонним апи
+    - build-server/controllers - обработчики обращений к своим и сторонним апи
     - build-server/utils - вспомогательные утилиты
 
 Вернуться [К содержанию](#content_table)

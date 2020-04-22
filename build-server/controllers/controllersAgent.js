@@ -1,6 +1,6 @@
 const { apiAgent } = require('../api');
 
-const agentControllers = {
+const controllersAgent = {
   // Обработка отправки билда билд агенту
   async startBuild(url, params) {
     try {
@@ -14,4 +14,4 @@ const agentControllers = {
   },
 };
 
-module.exports = agentControllers;
+module.exports = controllersAgent;

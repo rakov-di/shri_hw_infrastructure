@@ -1,5 +1,5 @@
-const dbControllers = require('../controllers/dbControllers');
-const agentControllers = require('../controllers/agentControllers');
+const dbControllers = require('../controllers/controllersDB');
+const agentControllers = require('../controllers/controllersAgent');
 
 // console.log(typeof dbControllers);
 // console.log(typeof agentControllers);
@@ -116,7 +116,6 @@ class Storage{
   async startBuildInDB(build, agent) {
     agent.dateTime = new Date();
     this.updateBuildStatus(build.id,'InProgress');
-    console.log(agent.buildId, agent.dateTime.toISOString());
     const isStarted = await dbControllers.startBuild({ buildId: agent.buildId, dateTime: agent.dateTime.toISOString() });
     if (isStarted) {
       if (this.waitingBuilds) {
@@ -134,7 +133,6 @@ class Storage{
   }
 
   async finishBuild(params) {
-    console.log(params);
     const isFinish = await dbControllers.finishBuild(params);
     if (!isFinish) setTimeout(this.finishBuild.bind(this, params), 2000);
   }
