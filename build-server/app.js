@@ -31,7 +31,6 @@ const port = helpers.getConfig('port');
 app.listen(port, async (err) => {
   if (err) console.log(`Server didn't launch because of error: ${err}`);
   else console.log(`Server successfully launched on the port: ${port}`);
-  const [response1, response2] = await dbControllers.getInitialData();
-  storage.updateSettings(response1.data.data);
-  await storage.updateBuildsList(response2.data.data);
+
+  await storage.getInitialData();
 });

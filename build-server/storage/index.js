@@ -21,15 +21,21 @@ class Storage{
     this.interval = 5000; // интервал повторения для поиска свободных билд-агентов
   }
 
-  updateSettings(settings) {
-    this.settings = settings;
+  async getInitialData() {
+    const response = await dbControllers.getInitialData();
+    if (response) {
+      this.updateStore(response);
+      await this.searchAgent();
+    } else {
+      console.log('Next try in an 10000 ms');
+      setTimeout(this.getInitialData.bind(this), 10000)
+    }
   }
 
-  async updateBuildsList(newBuildsList) {
-    this.buildsList = newBuildsList.filter(build => build.status === 'Waiting');
-    this.waitingBuilds = this.buildsList.length;
-    // this.buildsList.forEach()
-    await this.searchAgent();
+  updateStore([ responseSettings, responseBuildsList ]) {
+    this.settings = responseSettings.data.data;
+    this.buildsList = responseBuildsList.data.data.filter(build => ['Waiting','InProgress'].includes(build.status));
+    this.waitingBuilds = responseBuildsList.data.data.filter(build => build.status === 'Waiting').length;
   }
 
   registerAgent({ host, port }) {
