@@ -114,20 +114,29 @@ class Storage{
   }
 
   async startBuildInDB(build, agent) {
-    console.log(build, agent);
     agent.dateTime = new Date();
     this.updateBuildStatus(build.id,'InProgress');
+    console.log(agent.buildId, agent.dateTime.toISOString());
     const isStarted = await dbControllers.startBuild({ buildId: agent.buildId, dateTime: agent.dateTime.toISOString() });
     if (isStarted) {
-      console.log(`Build ${agent.buildId} successfully started in DB ad ${agent.dateTime}`);
       if (this.waitingBuilds) {
         this.searchAgent();
       } else {
         console.log('Заглушка для запроса за новым билд листом, т.к. старый весь уже сбилжен или распределен по агентам')
       }
     } else {
-      setTimeout(this.startBuildInDB.bind(this), 2000);
+      // Пробуем, пока БД не ответит. В реальности, надо прекращать через
+      // сколько-то попыток (а то ж зависнет все тут) и что-то делать с билдом -
+      // то ли отменять и зановов собирать, только сохранять и позже
+      // возобновлять попытки
+      setTimeout(this.startBuildInDB.bind(this, build, agent), 2000);
     }
+  }
+
+  async finishBuild(params) {
+    console.log(params);
+    const isFinish = await dbControllers.finishBuild(params);
+    if (!isFinish) setTimeout(this.finishBuild.bind(this, params), 2000);
   }
 }
 

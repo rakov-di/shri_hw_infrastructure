@@ -45,23 +45,23 @@ const dbControllers = {
 
   async startBuild(params) {
     try {
-      return await apiDB.startBuild(params)
+      await apiDB.startBuild(params);
+      console.log(`Build ${params.buildId} successfully started in DB at ${params.dateTime}`);
+      return true;
     } catch(err) {
-      console.error(`Can't start build in DB because of en Error: ${err.message}`);
-      // Пробуем, пока БД не ответит. В реальности, надо прекращать через
-      // сколько-то попыток (а то ж зависнет все тут) и что-то делать с билдом -
-      // то ли отменять и зановов собирать, только сохранять и позже
-      // возобновлять попытки
-      setTimeout(dbControllers.startBuild, 2000);
+      console.error(`Can't start build in DB because of an Error: ${err.message}`);
+      return false;
     }
   },
 
   async finishBuild(params) {
     try {
-      return await apiDB.finishBuild(params);
+      await apiDB.finishBuild(params);
+      console.log(`Build ${params.buildId} successfully finished in DB`);
+      return true;
     } catch(err) {
-      console.error(`Can't finish build in DB because of en Error: ${err.message}`);
-      setTimeout(dbControllers.finishBuild, 2000);
+      console.error(`Can't finish build in DB because of an Error: ${err.message}`);
+      return false;
     }
   }
 };

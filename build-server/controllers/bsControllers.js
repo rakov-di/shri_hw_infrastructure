@@ -22,15 +22,14 @@ const bsControllers = {
       message: 'Result of build successfully got'
     });
 
-    const buildDuration = storage.updateAgentStatus(buildId, true); // в любом случае освобождаем агент
-    storage.updateBuildStatus(buildId, status ? 'Success' : 'Fail');
-    await dbControllers.finishBuild({
+    const buildDuration = storage.updateAgentStatus(buildId, true); // освобождаем агент
+    storage.updateBuildStatus(buildId, status ? 'Success' : 'Fail'); // Обновляем статус в локальном хранилище (в принципе, ни для чего не используется)
+    await storage.finishBuild({
       buildId,
-      duration: buildDuration,
       success: status,
-      buildLog: log
-    });
-    storage.deleteBuild(buildId);
+      buildLog: log,
+      duration: buildDuration
+    }); // Обновляет статус в api БД
   },
 };
 
