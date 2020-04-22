@@ -66,11 +66,7 @@ class Storage{
   updateBuildStatus(buildId, status) {
     const build = this.buildsList.find(build => build.id === buildId);
     build.status = status;
-    status === 'InProgress' && this.waitingBuilds--; // уменьшаем кол-во билдов, требующих агента
-  }
-
-  deleteBuild(buildId) {
-    delete this.buildsList.find(build => build.id = buildId);
+    status === 'InProgress' && this.waitingBuilds--; // уменьшаем кол-во билдов, требующих сборки (происходит в момент назначения билду билд-агента)
   }
 
   async searchAgent(agentNum = 0) {
@@ -121,7 +117,7 @@ class Storage{
       if (this.waitingBuilds) {
         this.searchAgent();
       } else {
-        console.log('Заглушка для запроса за новым билд листом, т.к. старый весь уже сбилжен или распределен по агентам')
+        this.getInitialData();
       }
     } else {
       // Пробуем, пока БД не ответит. В реальности, надо прекращать через
