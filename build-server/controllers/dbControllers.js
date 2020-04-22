@@ -8,13 +8,13 @@ const dbControllers = {
       // Первичные запросы за билд-листом и настройками репозитория
       // Без этих данных билдить невозможно, поэтому
       // оба запросы будут повторяться, пока не получат настройки и НЕ пустой список билдов
-      const [response1, response2] = await Promise.all([
+      const [responseSettings, responseBuildsList] = await Promise.all([
         dbControllers.getSettings(),
         dbControllers.getBuildsList()
       ]);
-      if (response2.data.data.length) {
+      if (responseBuildsList.data.data.length) {
         console.log('Repo settings and build list successfully got');
-        return [response1, response2];
+        return [responseSettings, responseBuildsList];
       } else {
         console.log(`There is no builds with status Waiting in buildsList`);
         return false;
@@ -57,7 +57,6 @@ const dbControllers = {
   },
 
   async finishBuild(params) {
-    console.log(params);
     try {
       return await apiDB.finishBuild(params);
     } catch(err) {

@@ -12,7 +12,6 @@ const bsControllers = {
   async registerAgent() {
     try {
       const response = await registerAgent();
-      console.log(response.data.message);
       apiBSErrorsCount = 0;
     } catch(err) {
       console.error('Can not register build agent because of error: ', err.message);
@@ -26,7 +25,6 @@ const bsControllers = {
   async sendBuildResults(params) {
     try {
       const response = await sendBuildResults(params);
-      console.log(response.data.message);
       apiBSErrorsCount = 0;
     } catch(err) {
       apiBSErrorsCount++;

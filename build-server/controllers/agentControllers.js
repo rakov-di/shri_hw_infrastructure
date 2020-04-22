@@ -5,8 +5,7 @@ const agentControllers = {
   async startBuild(url, params) {
     try {
       console.log('Try to send build', params.buildId, 'to build-agent: ', url);
-      const response = await apiAgent.startBuild(url, params);
-      console.log(response.data.message);
+      await apiAgent.startBuild(url, params);
       return true;
     } catch(err) {
       console.log('Can not send', params.buildId, 'to build-agent ', url, 'because of error: ', err.message);

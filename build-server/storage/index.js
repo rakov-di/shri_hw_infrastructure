@@ -58,7 +58,6 @@ class Storage{
     const agent = this.agents.find(agent => agent.buildId = String(buildId));
     agent.isFree = isFree;
     agent.duration = new Date() - agent.dateTime;
-    console.log('crab', agent.duration);
     agent.buildId = null;
     agent.dateTime = null;
     return agent.duration;
@@ -72,7 +71,6 @@ class Storage{
 
   deleteBuild(buildId) {
     delete this.buildsList.find(build => build.id = buildId);
-    console.log('crab', this.buildsList)
   }
 
   async searchAgent(agentNum = 0) {
@@ -83,20 +81,14 @@ class Storage{
       console.log('There are free build-agents');
       // Если агенты не отвечают, а мы уже перебрали весь массив - заходим на второй круг
       agentNum = (agentNum < freeAgents.length) ? agentNum : 0;
-      console.log(`Try to assign build to build-agent ${freeAgents[agentNum]}`);
-      const isAssigned = await this.assignBuildToAgent(freeAgents[agentNum]);
-      if (isAssigned) {
-        console.log(`Build succesfully assigned to build-agent ${freeAgents[agentNum].url}`);
-        // Если билд назначен (агент ответил) и еще есть билды со статусом Waiting - ищем следующего свободного агента,
-        if (this.waitingBuilds) {
-          this.searchAgent();
-        } else {
-          console.log('Заглушка для запроса за новым билд листом, т.к. старый весь уже сбилжен или распределен по агентам')
-        }
+      const assignedBuild = await this.assignBuildToAgent(freeAgents[agentNum]);
+      if (assignedBuild) {
+        console.log(`Build successfully assigned to build-agent ${freeAgents[agentNum].url}`);
+        this.startBuildInDB(assignedBuild, freeAgents[agentNum]);
       } else {
         console.log(`Build-agents didn't assigned. Try next free build-agent`);
         // Если агент не ответил - пробуем назначить билд следующему агенту
-        this.searchAgent(agentNum + 1)
+        this.searchAgent.bind(this)(agentNum + 1);
       }
     } else {
       // Если агентов нет - повторяем поиск через интервал
@@ -118,18 +110,24 @@ class Storage{
     agent.buildId = String(build.id); // Запоминаем, какой buildId назначен агенту
     agent.isFree = false; // Меняем статус агента на Занят
 
-    const isAssigned = await agentControllers.startBuild(agent.url, params);
-    this.updateBuildStatus(build.id,'InProgress');
-    agent.dateTime = new Date();
-    await dbControllers.startBuild({ buildId: agent.buildId, dateTime: agent.dateTime.toISOString() });
-    console.log(`Build ${agent.buildId} successfully started in DB ad ${agent.dateTime}`);
-    return isAssigned;
+    return await agentControllers.startBuild(agent.url, params) ? build : false;
+  }
 
-    // try {
-    //   console.log('Build status for build ', agent.buildId, 'was updeted on: ', agent.dateTime);
-    // } catch(err) {
-    //   console.log(err);
-    // }
+  async startBuildInDB(build, agent) {
+    console.log(build, agent);
+    agent.dateTime = new Date();
+    this.updateBuildStatus(build.id,'InProgress');
+    const isStarted = await dbControllers.startBuild({ buildId: agent.buildId, dateTime: agent.dateTime.toISOString() });
+    if (isStarted) {
+      console.log(`Build ${agent.buildId} successfully started in DB ad ${agent.dateTime}`);
+      if (this.waitingBuilds) {
+        this.searchAgent();
+      } else {
+        console.log('Заглушка для запроса за новым билд листом, т.к. старый весь уже сбилжен или распределен по агентам')
+      }
+    } else {
+      setTimeout(this.startBuildInDB.bind(this), 2000);
+    }
   }
 }
 

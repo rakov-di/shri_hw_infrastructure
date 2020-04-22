@@ -16,7 +16,6 @@ const apiBS = {
   },
 
   async sendBuildResults(params) {
-    console.log(`${serverUrl}/notify-build-result`);
     return await axios.post(`${serverUrl}/notify-build-result`, params);
   },
 };
