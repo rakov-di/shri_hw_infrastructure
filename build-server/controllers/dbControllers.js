@@ -12,11 +12,11 @@ const dbControllers = {
         dbControllers.getSettings(),
         dbControllers.getBuildsList()
       ]);
-      if (responseBuildsList.data.data.length) {
+      if (responseBuildsList.data.data.some(build => build.status === 'Waiting')) {
         console.log('Repo settings and build list successfully got');
         return [responseSettings, responseBuildsList];
       } else {
-        console.log(`There is no builds with status Waiting in buildsList`);
+        console.log(`There are no builds with status Waiting in buildsList`);
         return false;
       }
     } catch(err) {
