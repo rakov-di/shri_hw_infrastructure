@@ -1,6 +1,7 @@
 const express = require('express');
 const { router } = require('./router');
 const { dbControllers } = require('./controllers');
+const storage = require('./storage');
 const helpers = require('./utils/helpers');
 
 const app = express();
@@ -24,11 +25,13 @@ app.use((err, req, res, next) => {
   next();
 });
 
-dbControllers.getInitialData();
 
 
 const port = helpers.getConfig('port');
-app.listen(port, err => {
+app.listen(port, async (err) => {
   if (err) console.log(`Server didn't launch because of error: ${err}`);
   else console.log(`Server successfully launched on the port: ${port}`);
+  const [response1, response2] = await dbControllers.getInitialData();
+  storage.updateSettings(response1.data.data);
+  await storage.updateBuildsList(response2.data.data);
 });

@@ -1,10 +1,8 @@
-const apiDB = require('../api/apiDB');
-const apiAgent = require('../api/apiAgent');
-// const { dbControllers, agentControllers } = require('../controllers');
 const dbControllers = require('../controllers/dbControllers');
 const agentControllers = require('../controllers/agentControllers');
 
-
+// console.log(typeof dbControllers);
+// console.log(typeof agentControllers);
 // Информация, хранящаяся об агенте
 // this.agents = [{
 //   url: 'http://localhost:8001
@@ -52,23 +50,23 @@ class Storage{
   // Ищем агент по buildId, который был ему назначен при выдаче задания на билд
   updateAgentStatus(buildId, isFree) {
     const agent = this.agents.find(agent => agent.buildId = String(buildId));
-    console.log('crab1', agent);
     agent.isFree = isFree;
-    delete agent.buildId;
+    agent.duration = new Date() - agent.dateTime;
+    console.log('crab', agent.duration);
+    agent.buildId = null;
+    agent.dateTime = null;
+    return agent.duration;
   }
 
   updateBuildStatus(buildId, status) {
     const build = this.buildsList.find(build => build.id === buildId);
     build.status = status;
-
-    console.log('crab updatestatus', buildId);
-    console.log(this.buildsList);
-
     status === 'InProgress' && this.waitingBuilds--; // уменьшаем кол-во билдов, требующих агента
   }
 
   deleteBuild(buildId) {
     delete this.buildsList.find(build => build.id = buildId);
+    console.log('crab', this.buildsList)
   }
 
   async searchAgent(agentNum = 0) {
@@ -84,7 +82,6 @@ class Storage{
       if (isAssigned) {
         console.log(`Build succesfully assigned to build-agent ${freeAgents[agentNum].url}`);
         // Если билд назначен (агент ответил) и еще есть билды со статусом Waiting - ищем следующего свободного агента,
-        console.log('crab builds left', this.waitingBuilds );
         if (this.waitingBuilds) {
           this.searchAgent();
         } else {
@@ -103,7 +100,6 @@ class Storage{
   }
 
   async assignBuildToAgent(agent) {
-    console.log(this.buildsList);
     const builds = this.buildsList.filter(build => build.status === 'Waiting');
     const build = builds[builds.length - 1]; // берем первый из ожидающих билда коммитов (наиболее старый)
     // const repoSettings = await controllers.getSettings();
@@ -113,20 +109,18 @@ class Storage{
       repoName: this.settings.repoName,
       buildCommand:this.settings.buildCommand
     };
-    console.log(build);
-    console.log(build.id);
     agent.buildId = String(build.id); // Запоминаем, какой buildId назначен агенту
     agent.isFree = false; // Меняем статус агента на Занят
-    console.log('crab', agent);
 
     const isAssigned = await agentControllers.startBuild(agent.url, params);
     this.updateBuildStatus(build.id,'InProgress');
+    agent.dateTime = new Date();
+    await dbControllers.startBuild({ buildId: agent.buildId, dateTime: agent.dateTime.toISOString() });
+    console.log(`Build ${agent.buildId} successfully started in DB ad ${agent.dateTime}`);
     return isAssigned;
 
     // try {
-    //   agent.startTime = Date();
-    //   // await dbControllers.startBuild({ buildId: agent.buildId, startTime: agent.startTime});
-    //   console.log('Build status for build ', agent.buildId, 'was updeted on: ', agent.startTime);
+    //   console.log('Build status for build ', agent.buildId, 'was updeted on: ', agent.dateTime);
     // } catch(err) {
     //   console.log(err);
     // }

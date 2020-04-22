@@ -1,5 +1,5 @@
 const { apiDB } = require('../api');
-const storage = require('../storage');
+// const storage = require('../storage');
 
 let apiBDErrorsCount = 0; // текущее число ошибок при обращении к БД
 const maxApiBDErrorsCount = 2; // максимальное число обращений с ошибками, после которого надо увеличивать интервал обращения
@@ -24,8 +24,9 @@ const dbControllers = {
       if (response2.data.data.length) { // если список билдов не пустой - сохраняем и его и настройки для дальнейшей работы
         apiBDErrorsCount = 0; // После успешного запроса обнуляем счетчик ошибочных запросов
         console.log('Repo settings and build list successfully got');
-        storage.updateSettings(response1.data.data);
-        storage.updateBuildsList(response2.data.data);
+        return [response1, response2];
+        // storage.updateSettings(response1.data.data);
+        // storage.updateBuildsList(response2.data.data);
       } else { // если пустой - повторяем запрос к БД позже
         console.log(`Build list is empty, I will try again in an ${longInterval} ms`);
         setTimeout(dbControllers.getInitialData, longInterval);
@@ -63,7 +64,22 @@ const dbControllers = {
     try {
       return await apiDB.startBuild(params)
     } catch(err) {
-      console.error('Can not set status In Progress because of en Error: ', err);
+      console.error(`Can't start build in DB because of en Error: ${err.message}`);
+      // Пробуем, пока БД не ответит. В реальности, надо прекращать через
+      // сколько-то попыток (а то ж зависнет все тут) и что-то делать с билдом -
+      // то ли отменять и зановов собирать, только сохранять и позже
+      // возобновлять попытки
+      setTimeout(dbControllers.startBuild, 2000);
+    }
+  },
+
+  async finishBuild(params) {
+    console.log(params);
+    try {
+      return await apiDB.finishBuild(params);
+    } catch(err) {
+      console.error(`Can't finish build in DB because of en Error: ${err.message}`);
+      setTimeout(dbControllers.finishBuild, 2000);
     }
   }
 };

@@ -1,4 +1,5 @@
 const storage = require('../storage');
+const dbControllers = require('./dbControllers');
 
 const bsControllers = {
   // Получения настроек текущего репозитория (repoName и buildCommand)
@@ -21,10 +22,18 @@ const bsControllers = {
       message: 'Result of build successfully got'
     });
 
-    storage.updateAgentStatus(buildId, true); // в любом случае освобождаем агент
-    status = status ? 'Success' : 'Fail';
-    storage.updateBuildStatus(buildId, status);
-    //saveToStorage
+    const buildDuration = storage.updateAgentStatus(buildId, true); // в любом случае освобождаем агент
+    storage.updateBuildStatus(buildId, status ? 'Success' : 'Fail');
+    console.log('crab', buildDuration);
+    console.log('crab', status);
+    console.log('crab', log);
+    await dbControllers.finishBuild({
+      buildId,
+      duration: buildDuration,
+      success: status,
+      buildLog: log
+    });
+    console.log('crab Continue=========');
     storage.deleteBuild(buildId);
   },
 };
