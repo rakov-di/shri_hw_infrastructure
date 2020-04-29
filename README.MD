@@ -37,8 +37,8 @@
 ## Начало работы <a name = "getting_started"></a>
 
 Для запуска приложения необходимо:
-- В папке [build-server](build-server) создать файл конфигурации `config.json` (содержимое - по аналогии с файлом [config.example.json](build-server/config.example.json)).
-
+- В папке [build-server](server) переименовать файл с примером конфигурации [server-conf.example.json](server/server-conf.example.json) в `server-conf.json`.
+В поле `apiToken` подставьте ваш токен авторизации (его можно получить по [фейковой сссылке](README.MD))
 - Запустить билд-сервер:
 ```bash
 cd build-server && npm ci && npm start
@@ -58,7 +58,7 @@ cd build-agent && npm ci && npm start
 Структура билд-сервера и билд-агента похожи.
 - build-server
     - app.js - точка всхода
-    - config.js - основные настройки
+    - server-conf.js - основные настройки
     - build-server/router - маршрутизация зарпросов, приходящих на торчащие наружу ручки
     - build-server/api - апи для обращения наружу (к апи БД и ручкам билд-агента)
     - build-server/controllers - обработчики обращений к своим и сторонним апи
@@ -66,7 +66,7 @@ cd build-agent && npm ci && npm start
     - build-server/storage - хранилище информации о билдах и агентах (на самом деле, немножно помойка, надеюсь, разобраться с логикой, часть перекинуть в контроллеры, часть упростить)
 - build-agent
     - app.js - точка всхода
-    - config.js - основные настройки
+    - agent-conf.js - основные настройки
     - build-server/router - маршрутизация зарпросов, приходящих на торчащие наружу ручки
     - build-server/api - апи для обращения наружу (к ручкам билд-сервера)
     - build-server/controllers - обработчики обращений к своим и сторонним апи

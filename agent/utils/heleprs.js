@@ -12,7 +12,7 @@ const stat = util.promisify(fs.stat);
 const readFile = util.promisify(fs.readFile);
 
 const getConfig = (key) => {
-  const configRaw = fs.readFileSync(path.join(rootPath, 'config.json'));
+  const configRaw = fs.readFileSync(path.join(rootPath, 'agent-conf.json'));
   const config = JSON.parse(configRaw);
   return key ? config[key] : config;
 };
